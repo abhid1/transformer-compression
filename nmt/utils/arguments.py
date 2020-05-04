@@ -58,7 +58,7 @@ def init_config():
     parser.add_argument('--patience', default=5, type=int, help='training patience')
     parser.add_argument('--uniform_init', default=None, type=float, help='uniform initialization for parameters')
     parser.add_argument('--clip_grad', default=5., type=float, help='clip gradients')
-    parser.add_argument('--max_epoch', default=1, type=int, help='maximum number of training iterations')
+    parser.add_argument('--max_epoch', default=10, type=int, help='maximum number of training iterations')
 
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--lr_warm', default=0.0001, type=float, help='learning rate for warmed model')
