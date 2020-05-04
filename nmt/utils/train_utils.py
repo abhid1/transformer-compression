@@ -124,8 +124,11 @@ def valid(model, SRC, TGT, valid_iter, num_steps, to_words=False):
     translation_sentences = [" ".join(x) for x in translation_sentences]
     target_sentences = [" ".join(x) for x in target_sentences]
 
-    print(translate[0])
-    print(tgt[0])
+    print(translate[0], translation_sentences[0])
+    print(tgt[0], target_sentences[0])
+
+    print(translate[5], translation_sentences[5])
+    print(tgt[5], target_sentences[5])
 
     # return evaluate_bleu(translate, tgt)
     return evaluate_bleu(translation_sentences, target_sentences)
@@ -317,6 +320,24 @@ def test_decode(model, SRC, TGT, valid_iter, num_steps, to_words=False, file_pat
             translate.append(translate_str)
             tgt.append([tgt_str])
 
+    translation_sentences = []
+    target_sentences = []
+
+    for translation_sentence_index in range(len(translate)):
+        translation_sentences.append([TGT.vocab.itos[i] for i in translate[translation_sentence_index]])
+
+    for target_sentence_index in range(len(tgt)):
+        target_sentences.append([TGT.vocab.itos[i] for i in tgt[target_sentence_index][0]])
+
+    # Essential for sacrebleu calculations
+    translation_sentences = [" ".join(x) for x in translation_sentences]
+    target_sentences = [" ".join(x) for x in target_sentences]
+
+    print(translate[0], translation_sentences[0])
+    print(tgt[0], target_sentences[0])
+
+    print(translate[5], translation_sentences[5])
+    print(tgt[5], target_sentences[5])
 
     if file_path is not None:
         print(len(translate))
@@ -330,4 +351,5 @@ def test_decode(model, SRC, TGT, valid_iter, num_steps, to_words=False, file_pat
             for hyps in tgt:
                 f.write(' '.join(hyps[0][1:-1]) + '\n')
 
-    return evaluate_bleu(translate, tgt)
+    #return evaluate_bleu(translate, tgt)
+    return evaluate_bleu(translation_sentences, target_sentences)
