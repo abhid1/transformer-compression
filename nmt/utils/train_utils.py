@@ -7,6 +7,7 @@ import time, sys
 import nmt.transformer as transformer
 import nltk
 import os
+import sacrebleu
 
 
 class Batch:
@@ -47,18 +48,27 @@ class LossCompute:
             self.opt.step()
             self.opt.optimizer.zero_grad()
         return loss.item() * norm
-    
+
+
+def lookup_words(x, vocab=None):
+    if vocab is not None:
+        x = [vocab.itos[i] for i in x]
+
+    return [str(t) for t in x]
+
 
 def evaluate_bleu(predictions, labels):
     try:
-        bleu_nltk = nltk.translate.bleu_score.corpus_bleu(labels, predictions)
+        #bleu_nltk = nltk.translate.bleu_score.corpus_bleu(labels, predictions)
+        bleu_sacre = sacrebleu.raw_corpus_bleu(predictions, [labels], .01).score
     except (KeyboardInterrupt, SystemExit):
         raise
     except BaseException as e:
         print("\nWARNING: Could not compute BLEU-score. Error:", str(e))
         bleu_nltk = 0
 
-    return bleu_nltk
+    #return bleu_nltk
+    return bleu_sacre
     
     
 def valid(model, SRC, TGT, valid_iter, num_steps, to_words=False):
@@ -100,9 +110,25 @@ def valid(model, SRC, TGT, valid_iter, num_steps, to_words=False):
 
         if (i + 1) % num_steps == 0:
             break
+
+    translation_sentences = []
+    target_sentences = []
+
+    for translation_sentence_index in range(len(translate)):
+        translation_sentences.append([TGT.vocab.itos[i] for i in translate[translation_sentence_index]])
+
+    for target_sentence_index in range(len(tgt)):
+        target_sentences.append([TGT.vocab.itos[i] for i in tgt[target_sentence_index][0]])
+
+    # Essential for sacrebleu calculations
+    translation_sentences = [" ".join(x) for x in translation_sentences]
+    target_sentences = [" ".join(x) for x in target_sentences]
+
     print(translate[0])
-    print(tgt[0][0])
-    return evaluate_bleu(translate, tgt)
+    print(tgt[0])
+
+    # return evaluate_bleu(translate, tgt)
+    return evaluate_bleu(translation_sentences, target_sentences)
 
 
 def run_epoch(args, data_iter, model, loss_compute, valid_params=None, epoch_num=0,

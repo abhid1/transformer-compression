@@ -71,7 +71,7 @@ def prepare_data(args):
         TGT = data.Field(unk_token=UNK_TOKEN, pad_token=PAD_TOKEN, init_token=SOS_TOKEN, eos_token=EOS_TOKEN, 
                         lower=args.lower)
 
-    MAX_LEN = args.max_lenght
+    MAX_LEN = args.max_length
     if args.iwslt:
         datatype = IWSLT14
     else:

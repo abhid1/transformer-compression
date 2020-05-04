@@ -24,7 +24,7 @@ def init_config():
     parser.add_argument('--tokenize', action='store_true',  help='tokenize the dataset')
     parser.add_argument('--lower', action='store_true',  help='lowercase the dataset')
     parser.add_argument('--min_freq', type=int,  default=5, help='min frequency')
-    parser.add_argument('--max_lenght', type=int,  default=50, help='max lenght of sentencess')
+    parser.add_argument('--max_length', type=int,  default=50, help='max lenght of sentencess')
 
     parser.add_argument('--train_src', type=str, help='path to the training source file')
     parser.add_argument('--train_tgt', type=str, help='path to the training target file')
@@ -58,7 +58,7 @@ def init_config():
     parser.add_argument('--patience', default=5, type=int, help='training patience')
     parser.add_argument('--uniform_init', default=None, type=float, help='uniform initialization for parameters')
     parser.add_argument('--clip_grad', default=5., type=float, help='clip gradients')
-    parser.add_argument('--max_epoch', default=10, type=int, help='maximum number of training iterations')
+    parser.add_argument('--max_epoch', default=1, type=int, help='maximum number of training iterations')
 
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--lr_warm', default=0.0001, type=float, help='learning rate for warmed model')
