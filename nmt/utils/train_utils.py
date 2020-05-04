@@ -325,7 +325,7 @@ def test_decode(model, SRC, TGT, valid_iter, num_steps, to_words=False, file_pat
     target_sentences = []
 
     for target_sentences_index in range(len(tgt)):
-        target_sentences.append(" ".join(x) for x in tgt[target_sentences_index])
+        target_sentences.append([" ".join(x) for x in tgt[target_sentences_index]])
 
     if file_path is not None:
         print(len(translate))
