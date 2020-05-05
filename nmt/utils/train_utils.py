@@ -80,33 +80,34 @@ def valid(model, SRC, TGT, valid_iter, num_steps, to_words=False):
         src_mask = (src != SRC.vocab.stoi["<pad>"]).unsqueeze(-2)
         out = greedy_decode(model, src, src_mask,
                             max_len=50, start_symbol=TGT.vocab.stoi["<s>"])
-        translate_str = []
-        for j in range(1, out.size(1)):
-            if to_words:
-                sym = TGT.vocab.itos[out[0, j]]
-                if sym == "</s>": break
-            else:
-                sym = out[0, j].item()
-                if TGT.vocab.stoi["</s>"] == sym:
-                    break
-            translate_str.append(sym)
-        tgt_str = []
-        for j in range(1, batch.trg.size(0)):
-            if to_words:
-                sym = TGT.vocab.itos[batch.trg[j, 0]]
-                if sym == "</s>": break
-            else:
-                sym = batch.trg[j, 0].item()
-                if TGT.vocab.stoi["</s>"] == sym:
-                    break
-            tgt_str.append(sym)
+        for k in range(out.size(0)):
+            translate_str = []
+            for j in range(1, out.size(1)):
+                if to_words:
+                    sym = TGT.vocab.itos[out[k, j]]
+                    if sym == "</s>": break
+                else:
+                    sym = out[k, j].item()
+                    if TGT.vocab.stoi["</s>"] == sym:
+                        break
+                translate_str.append(sym)
+            tgt_str = []
+            for j in range(1, batch.trg.size(0)):
+                if to_words:
+                    sym = TGT.vocab.itos[batch.trg[j, k]]
+                    if sym == "</s>": break
+                else:
+                    sym = batch.trg[j, k].item()
+                    if TGT.vocab.stoi["</s>"] == sym:
+                        break
+                tgt_str.append(sym)
+
+            translate.append(translate_str)
+            tgt.append([tgt_str])
 
         # else:
         #     translate_str = [str(i.item()) for i in out[0]]
         #     tgt_str = list(batch.trg[:, 0].cpu().numpy().astype(str))
-
-        translate.append(translate_str)
-        tgt.append([tgt_str])
 
         if (i + 1) % num_steps == 0:
             break
