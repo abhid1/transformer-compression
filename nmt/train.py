@@ -116,8 +116,8 @@ def train(args):
     valid_iter = data.Iterator(val_data, batch_size=BATCH_SIZE, train=False, sort=False, repeat=False,
                            device=device)
 
-    model_opt = opt.WrapperOpt(model.src_embed[0].d_model, 1, 2000,
-                                     torch.optim.Adam(model.parameters(), lr=args.lr))
+    model_opt = opt.WrapperOpt(model.src_embed[0].d_model, 2, 4000,
+                                     torch.optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.98), eps=1e-9))
 
     # train_time = begin_time = time.time()
     valid_params = (SRC, TGT, valid_iter)

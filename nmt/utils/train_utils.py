@@ -299,20 +299,20 @@ def test_decode(model, SRC, TGT, valid_iter, num_steps, to_words=False, file_pat
             translate_str = []
             for j in range(1, out.size(1)):
                 if to_words:
-                    sym = TGT.vocab.itos[out[0, j]]
+                    sym = TGT.vocab.itos[out[k, j]]
                     if sym == "</s>": break
                 else:
-                    sym = out[0, j].item()
+                    sym = out[k, j].item()
                     if TGT.vocab.stoi["</s>"] == sym:
                         break
                 translate_str.append(sym)
             tgt_str = []
             for j in range(1, batch.trg.size(0)):
                 if to_words:
-                    sym = TGT.vocab.itos[batch.trg[j, 0]]
+                    sym = TGT.vocab.itos[batch.trg[j, k]]
                     if sym == "</s>": break
                 else:
-                    sym = batch.trg[j, 0].item()
+                    sym = batch.trg[j, k].item()
                     if TGT.vocab.stoi["</s>"] == sym:
                         break
                 tgt_str.append(sym)
