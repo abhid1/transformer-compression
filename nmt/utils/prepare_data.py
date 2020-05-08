@@ -73,7 +73,7 @@ def prepare_data(args):
 
     MAX_LEN = args.max_length
     if args.iwslt:
-        datatype = IWSLT14
+        datatype = datasets.IWSLT
     else:
         datatype = datasets.Multi30k
     train_data, val_data, test_data = datatype.splits(
