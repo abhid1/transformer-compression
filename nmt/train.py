@@ -227,7 +227,7 @@ def test(args):
         params = torch.load(args.load_model, map_location=lambda storage, loc: storage)
         state_dict = params['model']
         # opts = params['']
-        model.load_state_dict(state_dict)
+        model.load_state_dict(state_dict, strict=False)
     if args.debug:
         #fast check number of parameters
         model_full = transformer.make_model(len(SRC.vocab), len(TGT.vocab),
@@ -236,7 +236,7 @@ def test(args):
                                        num_compress_enc=0,
                                        num_compress_dec=0)
         debug_compress_info(model_full,model)
-        exit()
+        # exit()
 
     criterion = train_utils.LabelSmoothing(size=len(TGT.vocab), padding_idx=pad_idx, smoothing=0.1)
     criterion.to(device)
