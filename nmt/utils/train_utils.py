@@ -195,6 +195,7 @@ def run_epoch(args, data_iter, model, loss_compute, valid_params=None, epoch_num
 
                 print('save model to [%s]' % model_file, file=sys.stderr)
 
+                time.sleep(10)
                 torch.save(checkpoint, model_file)
 
         if i % args.save_model_after == 0 and not is_valid and not args.save_best:
