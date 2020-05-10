@@ -200,7 +200,7 @@ def run_epoch(args, data_iter, model, loss_compute, valid_params=None, epoch_num
 
         if i % args.save_model_after == 0 and not is_valid and not args.save_best:
             model_state_dict = model.state_dict()
-            model_file = args.save_to + args.exp_name
+            model_file = args.save_to + args.exp_name + '.bin'
 
             checkpoint = {
                 'model': model_state_dict,
