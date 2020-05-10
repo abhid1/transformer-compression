@@ -97,7 +97,7 @@ def train(args):
                                    num_compress_enc=args.num_enc_blocks_comp,
                                    num_compress_dec=args.num_dec_blocks_comp
                                    )
-    model.cuda()
+    model.to(device)
     if args.load_model:
         print('load model from [%s]' % args.load_model, file=sys.stderr)
         params = torch.load(args.load_model, map_location=lambda storage, loc: storage)
@@ -108,13 +108,13 @@ def train(args):
 
     criterion = train_utils.LabelSmoothing(size=len(TGT.vocab), padding_idx=pad_idx, smoothing=0.1)
     # criterion = nn.NLLLoss(reduction="sum", ignore_index=0)
-    criterion.cuda()
+    criterion.to(device)
     train_iter = data.BucketIterator(train_data, batch_size=BATCH_SIZE, train=True,
                                  sort_within_batch=True,
                                  sort_key=lambda x: (len(x.src), len(x.trg)), repeat=False,
-                                 device=0)
+                                 device=device)
     valid_iter = data.Iterator(val_data, batch_size=BATCH_SIZE, train=False, sort=False, repeat=False,
-                           device=0)
+                           device=device)
 
     model_opt = opt.WrapperOpt(model.src_embed[0].d_model, 2, 4000,
                                      torch.optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.98), eps=1e-9))
@@ -128,7 +128,6 @@ def train(args):
     model_parameters = filter(lambda p: p.requires_grad, model.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     print("Number of parameters: ", params)
-
     if args.debug:
         model2 = transformer.make_model(len(SRC.vocab), len(TGT.vocab),
                                 d_model=args.hidden_dim, d_ff=args.ff_dim,
@@ -222,7 +221,7 @@ def test(args):
                                    compress_mode=args.compress_mode,
                                    num_compress_enc = args.num_enc_blocks_comp,
                                    num_compress_dec = args.num_dec_blocks_comp,)
-    model.cuda()
+    model.to(device)
     if args.load_model:
         print('load model from [%s]' % args.load_model, file=sys.stderr)
         params = torch.load(args.load_model, map_location=lambda storage, loc: storage)
@@ -240,7 +239,7 @@ def test(args):
         # exit()
 
     criterion = train_utils.LabelSmoothing(size=len(TGT.vocab), padding_idx=pad_idx, smoothing=0.1)
-    criterion.cuda()
+    criterion.to(device)
 
     if args.multi_gpu:
         devices = list(np.arange(args.num_devices))
@@ -280,6 +279,9 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed)
+
+    global device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     if args.mode == 'train':
         train(args)
