@@ -11,7 +11,8 @@ python3 nmt/train.py --seed 45 \
   --tok --lower \
   --save_model_after 200 \
   --max_ep 20 \
-  --exp wmt16_full  \
+  --exp iwslt  \
+  --iwslt \
   --save_best \
   --valid_every 100 \
   --multi-gpu\
